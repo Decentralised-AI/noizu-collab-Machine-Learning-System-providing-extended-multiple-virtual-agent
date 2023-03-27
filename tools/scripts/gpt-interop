@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+
+def get_capabilities(args):
+    print("PENDING")
+
+def get_code(args):
+    print("PENDING")
+
+def get_schema(args):
+    print("PENDING")
+
+def get_interface(args):
+    print("PENDING")
+
+
+def prompt(args):
+    print("""
+    This session includes support for a `gpt-interop` command, which allows you to make requests to interact with remote systems.
+
+    Command Usage Examples:
+    - gpt-interop capabilities # Output a list of available capabilities and their descriptions.
+    - gpt-interop capability search query # search to see if a specific capability like redis key-value storage support is present.
+    - gpt-interop capability name # Output instructions on how to use a specific capability.
+    - gpt-interop code list # List available code items.
+    - gpt-interop code search query # Search for a specific code item.
+    - gpt-interop code show file(s) # Display the contents of one or more code files.
+    - gpt-interop schema list # List available schema definitions.
+    - gpt-interop schema search query # Search for a specific schema definition.
+    - gpt-interop schema show schema(s) # Display the format and description of one or more schema definitions.
+    - gpt-interop interface list # List available interface definitions.
+    - gpt-interop interface search query # Search for a specific interface definition.
+    - gpt-interop interface show interface(s) # Display the format and description of one or more interface definitions.
+    - gpt-interop prompt # Output this prompt to remind you of the available commands and their usage.
+    - gpt-interop master # Execute the master command, which will take control of the session.
+    
+    """)
+
+
+def master(args):
+    print("PENDING")
+
+def issues(args):
+    print("PENDING")
+
+def wiki(args):
+    print("PENDING")
+
+def disk(args):
+    print("PENDING")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="GPT Interop")
+    parser.add_argument("command", choices=["capabilities", "code", "schema", "interface", "prompt", "master", "issues", "wiki", "disk"], help="subcommand to run")
+    args, remaining_args = parser.parse_known_args()
+
+    if args.command == "capabilities":
+        get_capabilities(remaining_args)
+    elif args.command == "code":
+        get_code(remaining_args)
+    elif args.command == "schema":
+        get_schema(remaining_args)
+    elif args.command == "interface":
+        get_interface(remaining_args)
+    elif args.command == "prompt":
+        prompt(remaining_args)
+    elif args.command == "master":
+        master(remaining_args)
+    elif args.command == "issues":
+        issues(remaining_args)
+    elif args.command == "wiki":
+        wiki(remaining_args)
+    elif args.command == "disk":
+        disk(remaining_args)
+

@@ -1,0 +1,56 @@
+WikiPage:
+  type: object
+  properties:
+    title:
+      type: string
+    content:
+      type: string
+    author:
+      type: string
+    created_at:
+      type: string
+      format: date-time
+    updated_at:
+      type: string
+      format: date-time
+    change_history:
+      type: array
+      items:
+        type: object
+        properties:
+          author:
+            type: string
+          created_at:
+            type: string
+            format: date-time
+          summary:
+            type: string
+    comments:
+      type: array
+      items:
+        type: object
+        properties:
+          author:
+            type: string
+          created_at:
+            type: string
+            format: date-time
+          text:
+            type: string
+    attachments:
+      type: array
+      items:
+        type: object
+        properties:
+          filename:
+            type: string
+          content_type:
+            type: string
+          download_url:
+            type: string
+  required:
+    - title
+    - content
+    - author
+    - created_at
+    - updated_at

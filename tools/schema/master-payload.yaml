@@ -1,0 +1,1 @@
+type: object\nproperties:\n  requests:\n    type: array\n    items:\n      type: object\n      additionalProperties:\n        type: object\n

@@ -1,0 +1,62 @@
+Ticket:
+  type: object
+  properties:
+    title:
+      type: string
+    description:
+      type: string
+    type:
+      type: string
+      enum: [bug, feature, enhancement]
+    priority:
+      type: string
+      enum: [low, medium, high]
+    status:
+      type: string
+      enum: [open, in progress, resolved]
+    assignee:
+      type: string
+    labels:
+      type: array
+      items:
+        type: string
+    comments:
+      type: array
+      items:
+        type: object
+        properties:
+          author:
+            type: string
+          created_at:
+            type: string
+            format: date-time
+          text:
+            type: string
+    attachments:
+      type: array
+      items:
+        type: object
+        properties:
+          filename:
+            type: string
+          content_type:
+            type: string
+          download_url:
+            type: string
+    due_date:
+      type: string
+      format: date
+    created_at:
+      type: string
+      format: date-time
+    updated_at:
+      type: string
+      format: date-time
+  required:
+    - title
+    - description
+    - type
+    - priority
+    - status
+    - created_at
+    - updated_at
