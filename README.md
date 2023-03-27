@@ -24,6 +24,7 @@ This project is built using:
 
 
 # Project Layout
+```ascii
 .
 ├── README.md
 ├── assets
@@ -52,7 +53,7 @@ This project is built using:
 │   ├── support
 │   └── test_helper.exs
 └── tools # Special interop tools for GPT models to interact with jira/github etc.
-
+```
  
 
 
