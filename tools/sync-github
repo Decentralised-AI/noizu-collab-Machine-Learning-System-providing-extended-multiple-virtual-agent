@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Fetching the project scope from the environment variable
+PROJECT_SCOPE=${NOIZU_PROJECT}
+
+# Generating the environment variable names for the project scope
+GITHUB_API_TOKEN_VAR="GITHUB_API_TOKEN__${PROJECT_SCOPE}"
+GITHUB_REPO_NAME_VAR="GITHUB_REPO_NAME__${PROJECT_SCOPE}"
+GITHUB_REPO_OWNER_VAR="GITHUB_REPO_OWNER__${PROJECT_SCOPE}"
+
+# Fetching the values of the environment variables
+GITHUB_API_TOKEN=${!GITHUB_API_TOKEN_VAR}
+GITHUB_REPO_NAME=${!GITHUB_REPO_NAME_VAR}
+GITHUB_REPO_OWNER=${!GITHUB_REPO_OWNER_VAR}
+
+if [ -z "$GITHUB_API_TOKEN" ] || [ -z "$GITHUB_REPO_NAME" ] || [ -z "$GITHUB_REPO_OWNER" ]; then
+  echo "Error: Missing required environment variables. Please set ${GITHUB_API_TOKEN_VAR}, ${GITHUB_REPO_NAME_VAR}, and ${GITHUB_REPO_OWNER_VAR}."
+  exit 1
+fi
+
+COMMAND=$1
+JSON_PAYLOAD=$2
+
+function handle_add() {
+  TITLE=$(echo "$JSON_PAYLOAD" | jq -r '.name')
+  DESCRIPTION=$(echo "$JSON_PAYLOAD" | jq -r '.description')
+  CHAT_PM_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
+
+
+  data=$(echo '{}' | jq --arg title "$TITLE" --arg desc "$DESCRIPTION" '.title = $title | .body = $desc')
+
+  curl -s -X POST -H "Authorization: token $GITHUB_API_TOKEN" -H "Content-Type: application/json" --data "$data" "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues"
+
+
+}
+
+function handle_show() {
+  ISSUE_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
+
+  curl -s -X GET -H "Authorization: token $GITHUB_API_TOKEN" \
+    "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues/$ISSUE_ID"
+}
+
+function handle_update() {
+  ISSUE_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
+  TITLE=$(echo "$JSON_PAYLOAD" | jq -r '.name')
+  DESCRIPTION=$(echo "$JSON_PAYLOAD" | jq -r '.description')
+
+  curl -s -X PATCH -H "Authorization: token $GITHUB_API_TOKEN" -H "Content-Type: application/json" \
+    --data "{\"title\": \"$TITLE\", \"body\": \"$DESCRIPTION\"}" \
+    "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues/$ISSUE_ID"
+}
+
+function handle_delete() {
+  ISSUE_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
+
+  curl -s -X PATCH -H "Authorization: token $GITHUB_API_TOKEN" -H "Content-Type: application/json" \
+    --data "{\"state\": \"closed\"}" \
+    "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues/$ISSUE_ID"
+}
+
+function handle_add_comment() {
+  ISSUE_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
+  COMMENT_BODY=$(echo "$JSON_PAYLOAD" | jq -r '.comment')
+
+  curl -s -X POST -H "Authorization: token $GITHUB_API_TOKEN" -H " Content-Type: application/json" \
+    --data "{\"body\": \"$COMMENT_BODY\"}" \
+    "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues/$ISSUE_ID/comments"
+}
+
+case "$COMMAND" in
+  add)
+    handle_add
+    ;;
+  show)
+    handle_show
+    ;;
+  update)
+    handle_update
+    ;;
+  delete)
+    handle_delete
+    ;;
+  add-comment)
+    handle_add_comment
+    ;;
+  *)
+    echo "Invalid command. Supported commands: add, show, update, delete, add-comment."
+    ;;
+esac
