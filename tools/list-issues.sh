@@ -1,14 +1,18 @@
 #!/bin/bash
 
-# Set the necessary variables
-repo=noizu-collab
-owner=noizu-labs
+# Generating the environment variable names for the project scope
+GITHUB_AUTH_TOKEN_VAR="GITHUB_API_TOKEN__${NOIZU_PROJECT}"
+GITHUB_REPO_NAME_VAR="GITHUB_REPO_NAME__${NOIZU_PROJECT}"
+GITHUB_REPO_OWNER_VAR="GITHUB_REPO_OWNER__${NOIZU_PROJECT}"
 
-# Check if the GITHUB_AUTH_TOKEN variable is set
-if [[ -z "${GITHUB_AUTH_TOKEN}" ]]; then
-  # Prompt the user to enter their auth token
-  echo "Please enter your GitHub personal access token:"
-  read -r GITHUB_AUTH_TOKEN
+# Fetching the values of the environment variables
+GITHUB_AUTH_TOKEN=${!GITHUB_AUTH_TOKEN_VAR}
+owner=${!GITHUB_REPO_OWNER_VAR}
+repo=${!GITHUB_REPO_NAME_VAR}
+
+if [ -z "$GITHUB_AUTH_TOKEN" ] || [ -z "$owner" ] || [ -z "$repo" ]; then
+  echo "Error: Missing required environment variables. Please set ${GITHUB_AUTH_TOKEN_VAR}, ${GITHUB_REPO_NAME_VAR}, and ${GITHUB_REPO_OWNER_VAR}."
+  exit 1
 fi
 
 # Get the list of open issues
