@@ -26,12 +26,9 @@ function handle_add() {
   DESCRIPTION=$(echo "$JSON_PAYLOAD" | jq -r '.description')
   CHAT_PM_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
 
-
   data=$(echo '{}' | jq --arg title "$TITLE" --arg desc "$DESCRIPTION" '.title = $title | .body = $desc')
 
   curl -s -X POST -H "Authorization: token $GITHUB_API_TOKEN" -H "Content-Type: application/json" --data "$data" "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues"
-
-
 }
 
 function handle_show() {
@@ -46,8 +43,10 @@ function handle_update() {
   TITLE=$(echo "$JSON_PAYLOAD" | jq -r '.name')
   DESCRIPTION=$(echo "$JSON_PAYLOAD" | jq -r '.description')
 
+  data=$(echo '{}' | jq --arg title "$TITLE" --arg desc "$DESCRIPTION" '.title = $title | .body = $desc')
+
   curl -s -X PATCH -H "Authorization: token $GITHUB_API_TOKEN" -H "Content-Type: application/json" \
-    --data "{\"title\": \"$TITLE\", \"body\": \"$DESCRIPTION\"}" \
+    --data "$data" \
     "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues/$ISSUE_ID"
 }
 
@@ -63,8 +62,11 @@ function handle_add_comment() {
   ISSUE_ID=$(echo "$JSON_PAYLOAD" | jq -r '.["chat-pm-id"]')
   COMMENT_BODY=$(echo "$JSON_PAYLOAD" | jq -r '.comment')
 
-  curl -s -X POST -H "Authorization: token $GITHUB_API_TOKEN" -H " Content-Type: application/json" \
-    --data "{\"body\": \"$COMMENT_BODY\"}" \
+  data=$(echo '{}' | jq --arg body "$COMMENT_BODY" '.body = $body')
+
+
+  curl -s -X POST -H "Authorization: token $GITHUB_API_TOKEN" -H "Content-Type: application/json" \
+    --data "$data" \
     "https://api.github.com/repos/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME/issues/$ISSUE_ID/comments"
 }
 
