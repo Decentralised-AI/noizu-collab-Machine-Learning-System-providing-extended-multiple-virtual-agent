@@ -9,7 +9,7 @@ defmodule NoizuCollab.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      NoizuCollab.Repo,
+#      NoizuCollab.Repo,
       # Start the Telemetry supervisor
       NoizuCollabWeb.Telemetry,
       # Start the PubSub system
